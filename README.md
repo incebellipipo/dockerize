@@ -16,8 +16,8 @@ _There is no need to install this "package"._ But if you wish you can do somethi
 4. Call `dockerize` anywhere
 
 ```bash
-$ mkdir -p `~/.dockerize`
-$ cd `~/.dockerize`
+$ mkdir -p ~/.dockerize
+$ cd ~/.dockerize
 $ git clone https://github.com/incebellipipo/dockerized-ros
 $ sudo ln -s ~/.dockerize/dockerize.sh /usr/local/bin/dockerize
 ```
