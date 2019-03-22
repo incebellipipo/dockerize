@@ -3,8 +3,8 @@
 This "package" allows you to create docker images where you can run graphical  programs like [Gazebo](http://gazebosim.org/) without effort. Docker image is based on official ROS docker images, but it can easily be changed to something else. 
 
 Here is the list that i didn't done _yet™_:
- [ ] Containers can only be run on Linux hosts
- [ ] Hardware acceleration is only works with Intel Graphic cards
+ - [ ] Containers can only be run on Linux hosts
+ - [ ] Hardware acceleration is only works with Intel Graphic cards
 
 ### Installation
 
@@ -41,15 +41,14 @@ $ ./dockerize.sh build
 $ ./dockerize.sh run
 ```
 
-> In order to run graphics applications like gazebo, you need to be in `video` group.  The user after you logged in to docker container is won't be in all groups where your local user belongs even though all user variables will be shared. As a quick work around you need to be logged in once again by using `su` command
->
-> ```bash
-> # Inside Docker
-> $ su - ${USER}
-> Password:
-> ```
->
-> _I personally recommend tmux after that._
+In order to run graphics applications like gazebo, you need to be in `video` group.  The user after you logged in to docker container is won't be in all groups where your local user belongs even though all user variables will be shared. As a quick work around you need to be logged in once again by using `su` command
+
+```bash
+# Inside Docker
+$ su - ${USER}
+Password:
+```
+_I personally recommend tmux after that._
 
 **Attaching running container**
 
