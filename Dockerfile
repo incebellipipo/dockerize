@@ -14,7 +14,6 @@ RUN \
 RUN \
   apt-get update && \
   apt-get install -y \
-    ros-kinetic-desktop-full \
     libcanberra-gtk-module && \
   rm -rf /var/lib/apt/lists/*
 
