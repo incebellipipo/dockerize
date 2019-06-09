@@ -3,8 +3,8 @@
 This "package" allows you to create docker images where you can run graphical  programs like [Gazebo](http://gazebosim.org/) without effort. Docker image is based on official ROS docker images, but it can easily be changed to something else. 
 
 Here is the list that i didn't done _yet™_:
- - [ ] Containers can only be run on Linux hosts
- - [ ] Hardware acceleration is only works with Intel Graphic cards
+ - [ ] Cross platform container support for network and UI operations
+ - [ ] Support for NVidia Graphics Cards
 
 ### Installation
 
