@@ -37,7 +37,7 @@ function run {
         --device /dev/input/ \
         --volume $HOME:$HOME \
         --name $CONTAINER_NAME \
-        $CONTAINER_IMAGE tmux
+        $CONTAINER_IMAGE $SHELL
 }
 
 function attach {
