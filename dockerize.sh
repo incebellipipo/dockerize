@@ -104,7 +104,7 @@ case "$1" in
                 * )                     echo "Creates and attaches a container with some options"
                                         echo "Usage:"
                                         echo "-n | --container_name : sets the container name which will be created. Default: \${USER}_\${CONTAINER_IMAGE}"
-                                        echo "-v | --ros_version    : sets ros distro which defines container image as \$USER:nvidia-\$ROS_VERSION"
+                                        echo "-v | --ros_version    : sets ros distro which defines container image as \$USER:\$ROS_VERSION"
                                         echo "-p | --project        : sets project name which defines container image as \$USER:project. With this option the ros_version parameter(-v) will be overwriten"
                                         echo "-i | --image          : sets the docker image. With this option the other parameters except container name(-n) will be overwriten"
                                         echo "-h | --help           : displays this message"
@@ -118,7 +118,7 @@ case "$1" in
         fi
         if [ -z "$CONTAINER_IMAGE" ] ; then
             echo "Ros Version Set To ${ROS_VERSION}"
-            CONTAINER_IMAGE=${USER}:nvidia-${ROS_VERSION}
+            CONTAINER_IMAGE=${USER}:${ROS_VERSION}
         fi
         if [ -z "$CONTAINER_NAME" ] ; then
             CONTAINER_NAME=${USER}_${ROS_VERSION}
