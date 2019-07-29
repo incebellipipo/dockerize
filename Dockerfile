@@ -17,4 +17,4 @@ RUN \
     libcanberra-gtk-module && \
   rm -rf /var/lib/apt/lists/*
 
-
+RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections

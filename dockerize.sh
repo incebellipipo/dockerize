@@ -9,13 +9,19 @@ done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 DOCKER_PATH=$DIR
-ROS_VERSION=melodic
+ROS_VERSION=${ROS_VERSION:-melodic}
 
 function build {
     docker build --build-arg ROS_VERSION=${ROS_VERSION} -t ${USER}:${ROS_VERSION} $DOCKER_PATH
 }
 
 function run {
+
+    if docker ps -a | grep $CONTAINER_NAME -q ; then
+        docker start $CONTAINER_NAME
+        return
+    fi
+
     docker stop $CONTAINER_NAME &> /dev/null
     docker rm $CONTAINER_NAME &> /dev/null
     # xhost +
@@ -23,7 +29,7 @@ function run {
     docker run \
         -it \
         --privileged \
-        --rm \
+        --net=host \
         --user $(id -u):$(id -g) \
             --env="DISPLAY=${DISPLAY}" \
             --env="QT_X11_NO_MITSHM=1" \
