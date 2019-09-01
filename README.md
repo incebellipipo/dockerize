@@ -1,3 +1,6 @@
+#### Attention
+If you are looking for a better solution go and checkout [osrf's rocker](https://github.com/osrf/rocker) repository
+
 # Dockerized ROS Environment
 
 This "package" allows you to create docker images where you can run graphical  programs like [Gazebo](http://gazebosim.org/) without effort. Docker image is based on official ROS docker images, but it can easily be changed to something else. 
