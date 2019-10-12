@@ -178,7 +178,8 @@ case "$1" in
             if [ -z "$CONTAINER_NAME" ] ; then
                 CONTAINER_NAME="${USER}_${ROS_VERSION}"
             fi
-            echo "Container Name Set To ${CONTAINER_NAME}" stop
+            echo "Stopping container ${CONTAINER_NAME}"
+            stop
     ;;
     clean ) shift
         if [ "$1" != "" ]; then
