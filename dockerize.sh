@@ -60,16 +60,23 @@ function clean {
     if [ -n "$containers" ]; then
         docker rm -v $containers > /dev/null
     fi
+}
 
+function remove {
     images=$(docker images -f "dangling=true" -q)
     if [ -n "$images" ]; then
         docker rmi $images > /dev/null
     fi
 }
 
-
+function install {
+  sudo ln -s $DIR/dockerize.sh /usr/local/bin/dockerize
+}
 
 case "$1" in
+    install ) shift
+      install
+    ;;
     build ) shift
         while [ "$1" != "" ]; do
                 case $1 in
@@ -199,11 +206,13 @@ case "$1" in
     *)  echo "Dockerize has following functions. Please type --help with any command for features. Example:  dockerize run --help"
         echo
         echo
+        echo "install   :Install this tool to system by creating symlink"
         echo "build     :Builds a container image which has ros and some useful tools"
         echo "run       :Creates and attaches a container with some options"
         echo "attach    :Attaches a container with a command"
         echo "stop      :Stops a running container"
-        echo "clean     :Clears all dangling containers and removes their images"
+        echo "clean     :Clears all dangling containers"
+        echo "remove    :Removes images without running containers"
         exit 1
         ;;
 esac
