@@ -5,6 +5,7 @@ ARG ROS_VERSION
 ENV ROS_VERSION=${ROS_VERSION}
 
 RUN \
+  export DEBIAN_FRONTEND=noninteractive && \
   echo "ROS Version is: " ${ROS_VERSION} && \
   apt-get update -yq && apt-get install -yq \
   apt-utils \
@@ -19,14 +20,7 @@ RUN \
     curl \
     iproute2 \
     build-essential \
-    ros-${ROS_VERSION}-desktop
-
-RUN \
-  apt-get update && \
-  apt-get install -y \
-    libcanberra-gtk-module \
-    python-catkin-tools \
+    ros-${ROS_VERSION}-desktop \
   && \
   rm -rf /var/lib/apt/lists/*
 
-RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections

@@ -24,24 +24,21 @@ function run {
 
     docker stop $CONTAINER_NAME &> /dev/null
     docker rm $CONTAINER_NAME &> /dev/null
-    # xhost +
+    xhost +
     # PROJECT SPECIFIC
     docker run \
         -it \
         --privileged \
         --net=host \
         --user $(id -u):$(id -g) \
-            --env="DISPLAY=${DISPLAY}" \
-            --env="QT_X11_NO_MITSHM=1" \
+            --env="DISPLAY" \
             --volume="/etc/group:/etc/group:ro" \
             --volume="/etc/passwd:/etc/passwd:ro" \
             --volume="/etc/shadow:/etc/shadow:ro" \
             --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+            --volume="/dev:/dev:rw" \
         --workdir $HOME \
-        --device /dev/dri/ \
-        --device /dev/vga_arbiter/ \
-        --device /dev/input/ \
         --volume $HOME:$HOME \
         --name $CONTAINER_NAME \
         $CONTAINER_IMAGE $SHELL
@@ -190,7 +187,7 @@ case "$1" in
     ;;
     clean ) shift
         if [ "$1" != "" ]; then
-            echo "Removes all the containers and images"
+            echo "Cleans running containers"
             echo "Usage:"
             echo "-h | --help           : displays this message"
             exit 1
@@ -199,6 +196,21 @@ case "$1" in
         read Verification
         if [ "$Verification" == "Yes" ]; then
             clean
+        else
+            echo "Cleaning could not be verified"
+        fi
+    ;;
+    remove ) shift
+        if [ "$1" != "" ]; then
+            echo "Removes all dangling images"
+            echo "Usage:"
+            echo "-h | --help           : displays this message"
+            exit 1
+        fi
+        echo "Please type Yes to verify cleaning"
+        read Verification
+        if [ "$Verification" == "Yes" ]; then
+            remove 
         else
             echo "Cleaning could not be verified"
         fi
