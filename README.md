@@ -71,8 +71,20 @@ $ ./dockerize.sh stop
 $ ./dockerize.sh clean
 ```
 
+## Nvidia driver setup inside the container
 
+On the host
+```#!/bin/bash
+version="$(glxinfo | grep "OpenGL version string" | rev | cut -d" " -f1 | rev)"
+wget http://us.download.nvidia.com/XFree86/Linux-x86_64/"$version"/NVIDIA-Linux-x86_64-"$version".run
+mv NVIDIA-Linux-x86_64-"$version".run NVIDIA-DRIVER.run****
+```
+In the container
+```
+sudo ./NVIDIA-DRIVER.run -a -N --ui=none --no-kernel-module
+```
 
+Credits: https://stackoverflow.com/a/44187181
 ## Customization
 
 Customize just like create any other Dockerfile.
