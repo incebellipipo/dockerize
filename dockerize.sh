@@ -10,9 +10,10 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 DOCKER_PATH=$DIR
 ROS_VERSION=${ROS_VERSION:-melodic}
+NVIDIA_VERSION=`modinfo -F version nvidia`
 
 function build {
-    docker build --build-arg ROS_VERSION=${ROS_VERSION} -t ${USER}:${ROS_VERSION} $DOCKER_PATH
+    docker build --build-arg ROS_VERSION=${ROS_VERSION} --build-arg=NVIDIA_VERSION=${NVIDIA_VERSION} -t ${USER}:${ROS_VERSION} $DOCKER_PATH
 }
 
 function run {
@@ -210,7 +211,7 @@ case "$1" in
         echo "Please type Yes to verify cleaning"
         read Verification
         if [ "$Verification" == "Yes" ]; then
-            remove 
+            remove
         else
             echo "Cleaning could not be verified"
         fi

@@ -4,6 +4,9 @@ FROM ros:$ROS_VERSION
 ARG ROS_VERSION
 ENV ROS_VERSION=${ROS_VERSION}
 
+ARG NVIDIA_VERSION
+ENV NVIDIA_VERSION=${NVIDIA_VERSION}
+
 RUN \
   export DEBIAN_FRONTEND=noninteractive && \
   echo "ROS Version is: " ${ROS_VERSION} && \
@@ -24,3 +27,9 @@ RUN \
   && \
   rm -rf /var/lib/apt/lists/*
 
+RUN \
+  if [ ! -z "${NVIDIA_VERSION}" ] ; then \
+    curl http://us.download.nvidia.com/XFree86/Linux-$(uname -m)/${NVIDIA_VERSION}/NVIDIA-Linux-$(uname -m)-${NVIDIA_VERSION}.run --output nvidia-driver.run &&\
+    chmod +x nvidia-driver.run && \
+    ./nvidia-driver.run --accept-license --ui=none --no-kernel-module --no-questions --no-systemd;\
+  fi
