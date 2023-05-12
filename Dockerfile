@@ -29,7 +29,10 @@ RUN \
 
 RUN \
   if [ ! -z "${NVIDIA_VERSION}" ] ; then \
-    curl http://us.download.nvidia.com/XFree86/Linux-$(uname -m)/${NVIDIA_VERSION}/NVIDIA-Linux-$(uname -m)-${NVIDIA_VERSION}.run --output nvidia-driver.run &&\
-    chmod +x nvidia-driver.run && \
-    ./nvidia-driver.run --accept-license --ui=none --no-kernel-module --no-questions --no-systemd;\
+    BASE_URL=http://us.download.nvidia.com/XFree86/Linux-$(uname -m)/${NVIDIA_VERSION}/NVIDIA-Linux-$(uname -m)-${NVIDIA_VERSION}.run ;\
+    response=$(curl --write-out '%{http_code}' --silent --output nvidia-driver.run $BASE_URL) ;\
+    if [[ "$response" != "404" ]] ; then \
+      chmod +x nvidia-driver.run ;\
+      ./nvidia-driver.run --accept-license --ui=none --no-kernel-module --no-questions --no-systemd;\
+    fi ;\
   fi

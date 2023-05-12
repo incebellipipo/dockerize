@@ -10,7 +10,7 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 DOCKER_PATH=$DIR
 ROS_VERSION=${ROS_VERSION:-melodic}
-NVIDIA_VERSION=`modinfo -F version nvidia`
+NVIDIA_VERSION=`nvidia-smi --query-gpu=driver_version --format=csv,noheader`
 
 function build {
     docker build --build-arg ROS_VERSION=${ROS_VERSION} --build-arg=NVIDIA_VERSION=${NVIDIA_VERSION} -t ${USER}:${ROS_VERSION} $DOCKER_PATH
