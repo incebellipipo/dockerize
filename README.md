@@ -7,7 +7,7 @@ This "package" allows you to create docker images where you can run graphical  p
 
 Here is the list that i didn't done _yet™_:
  - [ ] Cross platform container support for network and UI operations
- - [ ] Support for NVidia Graphics Cards
+ - [X] Support for NVidia Graphics Cards
 
 ### Installation
 
@@ -16,16 +16,13 @@ _There is no need to install this "package"._ But if you wish you can do somethi
 1. Create some local directory like `~/.dockerize`
 2. Clone this repository in `~/.dockerize`
 3. Create symlink to`~./.dockerize/dockerize.sh` `/usr/local/bin/dockerize`
-4. Call `dockerize` anywhere
+4. Call `ROS_VERSION=noetic dockerize` anywhere
 
 ```bash
-$ mkdir -p ~/.dockerize
-$ cd ~/.dockerize
-$ git clone https://github.com/incebellipipo/dockerize
-$ sudo ln -s ~/.dockerize/dockerize.sh /usr/local/bin/dockerize
+cd ~
+git clone https://github.com/incebellipipo/dockerize .dockerize
+sudo ln -s ~/.dockerize/dockerize.sh /usr/local/bin/dockerize
 ```
-
-
 
 ## Usage
 
@@ -34,14 +31,14 @@ $ sudo ln -s ~/.dockerize/dockerize.sh /usr/local/bin/dockerize
 Building images is pretty straight forward, only consumed variable here is `ROS_VERSION` environment variable. It could be set to versions of ROS which are published in [docker hub](https://hub.docker.com/_/ros).
 
 ```bash
-$ export ROS_VERSION=kinetic
-$ ./dockerize.sh build
+export ROS_VERSION=kinetic
+./dockerize.sh build
 ```
 
 **Run images**
 
 ```bash
-$ ./dockerize.sh run
+./dockerize.sh run
 ```
 
 In order to run graphics applications like gazebo, you need to be in `video` group.  The user after you logged in to docker container is won't be in all groups where your local user belongs even though all user variables will be shared. As a quick work around you need to be logged in once again by using `su` command
@@ -56,19 +53,19 @@ _I personally recommend tmux after that._
 **Attaching running container**
 
 ```bash
-$ ./dockerize.sh attach
+./dockerize.sh attach
 ```
 
 **Stopping running container**
 
 ```bash
-$ ./dockerize.sh stop
+./dockerize.sh stop
 ```
 
 **Cleaning detached containers**
 
 ```bash
-$ ./dockerize.sh clean
+./dockerize.sh clean
 ```
 
 ## Nvidia driver setup inside the container
