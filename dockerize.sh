@@ -33,6 +33,7 @@ function run {
         --net=host \
         --user $(id -u):$(id -g) \
             --env="DISPLAY" \
+            --env="TERM=xterm-256color" \
             --volume="/etc/group:/etc/group:ro" \
             --volume="/etc/passwd:/etc/passwd:ro" \
             --volume="/etc/shadow:/etc/shadow:ro" \
