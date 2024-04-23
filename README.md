@@ -3,11 +3,9 @@ If you are looking for a better solution go and checkout [osrf's rocker](https:/
 
 # Dockerized ROS Environment
 
-This "package" allows you to create docker images where you can run graphical  programs like [Gazebo](http://gazebosim.org/) without effort. Docker image is based on official ROS docker images, but it can easily be changed to something else. 
-
-Here is the list that i didn't done _yet™_:
- - [ ] Cross platform container support for network and UI operations
- - [X] Support for NVidia Graphics Cards
+This script allows you to create docker containers where you can run graphical programs like [Gazebo](http://gazebosim.org/) without much effort.
+This automation mimics your local installation and allows you to run your programs in a sandbox environment.
+It mounts your home directory to the container and shares the same user variables.
 
 ### Installation
 
@@ -16,7 +14,7 @@ _There is no need to install this "package"._ But if you wish you can do somethi
 1. Create some local directory like `~/.dockerize`
 2. Clone this repository in `~/.dockerize`
 3. Create symlink to`~./.dockerize/dockerize.sh` `/usr/local/bin/dockerize`
-4. Call `ROS_VERSION=noetic dockerize` anywhere
+4. Call `ROS_DISTRO=noetic dockerize` anywhere
 
 ```bash
 cd ~
@@ -28,11 +26,12 @@ sudo ln -s ~/.dockerize/dockerize.sh /usr/local/bin/dockerize
 
 **Build images**
 
-Building images is pretty straight forward, only consumed variable here is `ROS_VERSION` environment variable. It could be set to versions of ROS which are published in [docker hub](https://hub.docker.com/_/ros).
+Building images is pretty straight forward.
+The script builds the image with ROS version described in `ROS_DISTRO` environment variable.
+It could be set to versions of ROS which are published in [docker hub](https://hub.docker.com/_/ros).
 
 ```bash
-export ROS_VERSION=kinetic
-./dockerize.sh build
+ROS_DISTRO=humble ./dockerize.sh build
 ```
 
 **Run images**
@@ -41,40 +40,41 @@ export ROS_VERSION=kinetic
 ./dockerize.sh run
 ```
 
-In order to run graphics applications like gazebo, you need to be in `video` group.  The user after you logged in to docker container is won't be in all groups where your local user belongs even though all user variables will be shared. As a quick work around you need to be logged in once again by using `su` command
+The user does not belong to any group in the first run. You can check it by running `groups` command. Thus, after logging in to the container, you need to log in again to be in the groups where your local user belongs. This is necessary to access the devices like `/dev/dri` and `/dev/snd`, etc.
 
 ```bash
 # Inside Docker
 $ su - ${USER}
 Password:
 ```
-_I personally recommend tmux after that._
+
+Upon running the container, you may use TMUX or VSCode remote development to do development.
 
 **Attaching running container**
 
 ```bash
-./dockerize.sh attach
+ROS_DISTRO=humble ./dockerize.sh attach
 ```
 
 **Stopping running container**
 
 ```bash
-./dockerize.sh stop
+ROS_DISTRO=humble ./dockerize.sh stop
 ```
 
 **Cleaning detached containers**
 
 ```bash
-./dockerize.sh clean
+ROS_DISTRO=humble ./dockerize.sh clean
 ```
 
 ## Nvidia driver setup inside the container
 
 On the host
 ```#!/bin/bash
-version="$(glxinfo | grep "OpenGL version string" | rev | cut -d" " -f1 | rev)"
-wget http://us.download.nvidia.com/XFree86/Linux-x86_64/"$version"/NVIDIA-Linux-x86_64-"$version".run
-mv NVIDIA-Linux-x86_64-"$version".run NVIDIA-DRIVER.run
+export NVIDIA_DRIVER_VERSION="$(nvidia-smi --query-gpu=driver_version --format=csv,noheader)"
+wget http://us.download.nvidia.com/XFree86/Linux-x86_64/"$NVIDIA_DRIVER_VERSION"/NVIDIA-Linux-x86_64-"$NVIDIA_DRIVER_VERSION".run
+mv NVIDIA-Linux-x86_64-"$NVIDIA_DRIVER_VERSION".run NVIDIA-DRIVER.run
 ```
 In the container
 ```

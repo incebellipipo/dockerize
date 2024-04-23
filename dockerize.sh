@@ -9,11 +9,11 @@ done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 DOCKER_PATH=$DIR
-ROS_VERSION=${ROS_VERSION:-melodic}
-NVIDIA_VERSION=`nvidia-smi --query-gpu=driver_version --format=csv,noheader`
+ROS_DISTRO=${ROS_DISTRO:-humble}
+NVIDIA_DRIVER_VERSION=`nvidia-smi --query-gpu=driver_version --format=csv,noheader`
 
 function build {
-    docker build --build-arg ROS_VERSION=${ROS_VERSION} --build-arg=NVIDIA_VERSION=${NVIDIA_VERSION} -t ${USER}:${ROS_VERSION} $DOCKER_PATH
+    docker build --build-arg ROS_DISTRO=${ROS_DISTRO} --build-arg=NVIDIA_DRIVER_VERSION=${NVIDIA_DRIVER_VERSION} -t ${USER}:${ROS_DISTRO} $DOCKER_PATH
 }
 
 function run {
@@ -79,22 +79,29 @@ case "$1" in
     build ) shift
         while [ "$1" != "" ]; do
                 case $1 in
-                    -v | --ros_version )    shift
-                                            ROS_VERSION=$1
+                    -v | --ROS_DISTRO )    shift
+                                            ROS_DISTRO=$1
                                             ;;
                     * )                     echo "Builds container image which has ros and some useful tools"
                                             echo "Usage:"
-                                            echo "-v | --ros_version    : sets ros distro which created image will include. Default: melodic"
+                                            echo "-v | --ROS_DISTRO    : sets ros distro which created image will include. Default: melodic"
                                             echo "-h | --help           : displays this message"
                                             exit 1
                                             ;;
                 esac
                 shift
             done
-            if [ -z "$ROS_VERSION" ] ; then
-                ROS_VERSION=melodic
+            if [ -z "$ROS_DISTRO" ] ; then
+                ROS_DISTRO=melodic
             fi
-            echo "Ros Version Set To ${ROS_VERSION}"
+            echo "ROS Version Set To ${ROS_DISTRO}"
+
+            if [ -z "$NVIDIA_DRIVER_VERSION" ] ; then
+                echo "NVIDIA_DRIVER_VERSION is not set"
+            else
+                echo "NVIDIA_DRIVER_VERSION is set to ${NVIDIA_DRIVER_VERSION}"
+            fi
+
         build
     ;;
     run ) shift
@@ -103,9 +110,9 @@ case "$1" in
                 -n | --container_name ) shift
                                         CONTAINER_NAME=$1
                                         ;;
-                -v | --ros_version )    shift
-                                        ROS_VERSION=$1
-                                        CONTAINER_NAME=${USER}_${ROS_VERSION}
+                -v | --ROS_DISTRO )    shift
+                                        ROS_DISTRO=$1
+                                        CONTAINER_NAME=${USER}_${ROS_DISTRO}
                                         ;;
                 -p | --project )        shift
                                         CONTAINER_IMAGE=${USER}:${1}
@@ -116,9 +123,9 @@ case "$1" in
                                         ;;
                 * )                     echo "Creates and attaches a container with some options"
                                         echo "Usage:"
-                                        echo "-n | --container_name : sets the container name which will be created. Default: ${USER}_${ROS_VERSION}"
-                                        echo "-v | --ros_version    : sets ros distro which defines container image as ${USER}:${ROS_VERSION}"
-                                        echo "-p | --project        : sets project name which defines container image as ${USER}:project. With this option the ros_version parameter(-v) will be overwriten"
+                                        echo "-n | --container_name : sets the container name which will be created. Default: ${USER}_${ROS_DISTRO}"
+                                        echo "-v | --ROS_DISTRO    : sets ros distro which defines container image as ${USER}:${ROS_DISTRO}"
+                                        echo "-p | --project        : sets project name which defines container image as ${USER}:project. With this option the ROS_DISTRO parameter(-v) will be overwriten"
                                         echo "-i | --image          : sets the docker image. With this option the other parameters except container name(-n) will be overwriten"
                                         echo "-h | --help           : displays this message"
                                         exit 1
@@ -127,11 +134,11 @@ case "$1" in
             shift
         done
         if [ -z "$CONTAINER_IMAGE" ] ; then
-            echo "Ros Version Set To ${ROS_VERSION}"
-            CONTAINER_IMAGE="${USER}:${ROS_VERSION}"
+            echo "Ros Version Set To ${ROS_DISTRO}"
+            CONTAINER_IMAGE="${USER}:${ROS_DISTRO}"
         fi
         if [ -z "$CONTAINER_NAME" ] ; then
-            CONTAINER_NAME="${USER}_${ROS_VERSION}"
+            CONTAINER_NAME="${USER}_${ROS_DISTRO}"
         fi
         echo "Container Name Set To ${CONTAINER_NAME}"
         echo "CONTAINER_Image Set To ${CONTAINER_IMAGE}"
@@ -148,7 +155,7 @@ case "$1" in
                                             ;;
                     * )                     echo "Attaches a container with a command"
                                             echo "Usage:"
-                                            echo "-n | --container_name : sets the container name which will be attached. Default: ${USER}_${ROS_VERSION}"
+                                            echo "-n | --container_name : sets the container name which will be attached. Default: ${USER}_${ROS_DISTRO}"
                                             echo "-c | --command        : sets the command which will run Default: $SHELL"
                                             echo "-h | --help           : displays this message"
                                             exit 1
@@ -157,7 +164,7 @@ case "$1" in
                 shift
             done
             if [ -z "$CONTAINER_NAME" ] ; then
-                CONTAINER_NAME="${USER}_${ROS_VERSION}"
+                CONTAINER_NAME="${USER}_${ROS_DISTRO}"
             fi
             if [ -z "$COMMAND" ] ; then
                 COMMAND=$SHELL
@@ -174,7 +181,7 @@ case "$1" in
                                             ;;
                     * )                     echo "Stops a running container"
                                             echo "Usage:"
-                                            echo "-n | --container_name : sets the container name which will be attached. Default: ${USER}_${ROS_VERSION}"
+                                            echo "-n | --container_name : sets the container name which will be attached. Default: ${USER}_${ROS_DISTRO}"
                                             echo "-h | --help           : displays this message"
                                             exit 1
                                             ;;
@@ -182,7 +189,7 @@ case "$1" in
                 shift
             done
             if [ -z "$CONTAINER_NAME" ] ; then
-                CONTAINER_NAME="${USER}_${ROS_VERSION}"
+                CONTAINER_NAME="${USER}_${ROS_DISTRO}"
             fi
             echo "Stopping container ${CONTAINER_NAME}"
             stop
