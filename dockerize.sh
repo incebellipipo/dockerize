@@ -25,7 +25,9 @@ function run {
 
     docker stop $CONTAINER_NAME &> /dev/null
     docker rm $CONTAINER_NAME &> /dev/null
-    xhost +
+
+    xhost + local:
+    
     # PROJECT SPECIFIC
     docker run \
         -it \
